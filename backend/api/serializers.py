@@ -197,5 +197,3 @@ class RecipeChangeSerialiser(ModelSerializer):
         self.add_ingredients(validated_data.pop('ingredients'), instance)
         return super().update(instance, validated_data)
 
-
-
