@@ -1,36 +1,57 @@
-from django.contrib import admin
+from django.contrib.admin import (
+    ModelAdmin,
+    register,
+    site,
+    TabularInline,
+)
+from django.utils.safestring import mark_safe
 
 from recipes.models import (
-    Recipe, Ingredient, ShoppingCart, Favoutrite, Tag, IngredientAmount,
+    Recipe, Ingredient, ShoppingCart, Favorite, Tag, IngredientAmount,
 )
 
-
+site.site_header = 'Администрирование Foodgram-project-react'
 EMPTY_VALUE_DISPLAY = '--пусто--'
 
 
-@admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
+class IngredientInline(TabularInline):
+    model = IngredientAmount
+
+
+@register(Recipe)
+class RecipeAdmin(ModelAdmin):
     list_display = (
-        'name',
-        'author',
+        'name', 'author', 'get_image', 'count_favorites',
     )
     list_filter = (
-        'author',
-        'name',
-        'tags',
+        'name', 'author__username', 'tags__name'
     )
     search_fields = (
         'name',
     )
+    fields = (
+        ('name', 'cooking_time',),
+        ('author', 'tags',),
+        ('text',),
+        ('image',),
+    )
+    inlines = (IngredientInline, )
     empty_value_display = EMPTY_VALUE_DISPLAY
 
-    @staticmethod
-    def amount_favourites(self, obj):
+    def count_favorites(self, obj):
         return obj.in_favorites.count()
 
+    count_favorites.short_description = 'В избранном'
 
-@admin.register(Ingredient)
-class IngredientAdmin(admin.ModelAdmin):
+    def get_image(self, obj):
+        if obj.image:
+            return mark_safe(f'<img src={obj.image.url} width="80" hieght="30"')
+
+    get_image.short_description = 'Изображение'
+
+
+@register(Ingredient)
+class IngredientAdmin(ModelAdmin):
     list_display = (
         'name',
         'measurement_unit',
@@ -44,16 +65,14 @@ class IngredientAdmin(admin.ModelAdmin):
     empty_value_display = EMPTY_VALUE_DISPLAY
 
 
-@admin.register(IngredientAmount)
-class IngredientAmountAdmin(admin.ModelAdmin):
+@register(IngredientAmount)
+class IngredientAmountAdmin(ModelAdmin):
     list_display = (
         'recipe',
         'ingredient',
         'amount',
     )
     list_filter = (
-        'recipe',
-        'ingredient',
         'amount',
     )
     search_fields = (
@@ -62,8 +81,8 @@ class IngredientAmountAdmin(admin.ModelAdmin):
     empty_value_display = EMPTY_VALUE_DISPLAY
 
 
-@admin.register(Favoutrite)
-class FavoutriteAdmin(admin.ModelAdmin):
+@register(Favorite)
+class FavoutriteAdmin(ModelAdmin):
     list_display = (
         'user',
         'recipe',
@@ -77,8 +96,8 @@ class FavoutriteAdmin(admin.ModelAdmin):
     empty_value_display = EMPTY_VALUE_DISPLAY
 
 
-@admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
+@register(Tag)
+class TagAdmin(ModelAdmin):
     list_display = (
         'name',
         'color',
@@ -92,8 +111,8 @@ class TagAdmin(admin.ModelAdmin):
     empty_value_display = EMPTY_VALUE_DISPLAY
 
 
-@admin.register(ShoppingCart)
-class ShoppingCartAdmin(admin.ModelAdmin):
+@register(ShoppingCart)
+class ShoppingCartAdmin(ModelAdmin):
     list_display = (
         'recipe',
         'user',

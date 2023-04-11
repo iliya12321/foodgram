@@ -68,7 +68,7 @@ class Recipe(models.Model):
         Ingredient,
         related_name='recipes',
         verbose_name='Список ингридиентов',
-        through='recipes.IngredientAmount',
+        through='IngredientAmount',
     )
     tags = models.ManyToManyField(
         Tag,
@@ -115,13 +115,13 @@ class IngredientAmount(models.Model):
     """Количество ингридиентов в рецепте"""
     recipe = models.ForeignKey(
         Recipe,
-        related_name='amount',
+        related_name='ingredient',
         verbose_name='Рецепт',
         on_delete=models.CASCADE,
     )
     ingredient = models.ForeignKey(
         Ingredient,
-        related_name='amount',
+        related_name='recipe',
         verbose_name='Ингридиент',
         on_delete=models.CASCADE,
     )
@@ -149,7 +149,7 @@ class IngredientAmount(models.Model):
         return '{} {}'.format(self.amount, self.ingredient)
 
     
-class Favoutrite(models.Model):
+class Favorite(models.Model):
     """Избранные рецепты"""
     recipe = models.ForeignKey(
         Recipe,
