@@ -1,3 +1,6 @@
+from datetime import datetime as dt
+from django.db.models import F, Sum
+from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.status import (
     HTTP_201_CREATED,
@@ -7,14 +10,8 @@ from rest_framework.status import (
 from rest_framework.response import Response
 
 from api.serializers import FavoriteSerializer
-from recipes.models import Recipe, Ingredient
-
-
-from datetime import datetime as dt
-from django.db.models import F, Sum
-from django.http.response import HttpResponse
 from backend.settings import DATE_TIME_FORMAT
-from rest_framework.response import Response
+from recipes.models import Recipe, Ingredient
 
 
 def post_method(model, user, pk):

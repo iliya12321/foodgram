@@ -1,6 +1,5 @@
 from api.fields import Base64ImageField
 from rest_framework.serializers import (
-    CharField,
     IntegerField,
     ModelSerializer,
     PrimaryKeyRelatedField,
@@ -18,7 +17,7 @@ from recipes.models import (
     Tag,
     ShoppingCart,
 )
-from users.serializers import CustomUserSerializer
+from users.serializers import CustomUserSerializer, ShortRecipeSerializer
 
 
 class TagsSerializer(ModelSerializer):
@@ -93,27 +92,16 @@ class RecipeGetSerializer(ModelSerializer):
         return IngredientAmountSerializer(queryset, many=True).data
 
     def get_presence(self, model, obj):
-        request = self.context.get('request')
-        if not request or request.user.is_anonymous:
+        user = request = self.context.get('request').user
+        if user.is_anonymous:
             return False
-        return model.objects.filter(user=request.user, recipe=obj).exists()
+        return model.objects.filter(user=user, recipe=obj).exists()
 
     def get_is_favorited(self, obj):
         return self.get_presence(Favorite, obj)
 
     def get_is_in_shopping_cart(self, obj):
         return self.get_presence(ShoppingCart, obj)
-
-
-class ShortRecipeSerializer(ModelSerializer):
-    """
-    Сериализатор для модели Recipe.
-    Определён укороченный набор полей для некоторых эндпоинтов.
-    """
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
-        read_only_fields = fields
 
 
 class RecipeChangeSerializer(ModelSerializer):
@@ -215,18 +203,3 @@ class FavoriteSerializer(ModelSerializer):
         return ShortRecipeSerializer(
             instance.recipe, context=context
         ).data
-
-
-class ShoppingCartSerializer(ModelSerializer):
-    """
-    Сериализатор для списка покупок
-    """
-    class Meta:
-        model = ShoppingCart
-        fields = ('user', 'recipe')
-
-    def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
-        return ShortRecipeSerializer(
-            instance.recipe, context=context).data

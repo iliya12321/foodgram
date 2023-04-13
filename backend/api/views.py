@@ -1,12 +1,3 @@
-import os
-import io
-
-from django.conf import settings
-from django.http import FileResponse
-from django.db.models import Sum
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfgen import canvas
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, SAFE_METHODS, IsAuthenticated
@@ -15,6 +6,7 @@ from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
 )
 
+from api.pagination import CustomPagination
 from api.permissions import IsAuthorAdminOrReadOnly
 from api.serializers import (
     TagsSerializer,
@@ -26,7 +18,6 @@ from api.utlis import post_method, delete_method, download_cart
 from recipes.models import (
     Tag,
     Ingredient,
-    IngredientAmount,
     Recipe,
     Favorite,
     ShoppingCart,
@@ -61,6 +52,7 @@ class PecipeViewSet(viewsets.ModelViewSet):
     """
     queryset = Recipe.objects.all()
     permission_classes = (IsAuthorAdminOrReadOnly, )
+    pagination_class = CustomPagination
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
@@ -80,7 +72,7 @@ class PecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=['post', 'delete'],
-        permission_classes=[IsAuthenticated]
+        permission_classes=(IsAuthenticated, )
     )
     def shopping_cart(self, request, pk):
         if request.method == 'POST':
@@ -93,7 +85,7 @@ class PecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated, )
     )
     def download_shopping_cart(self, request):
-        user = self.request.user
+        user = request.user
         if not user.carts.exists():
             return Response(status=HTTP_400_BAD_REQUEST)
         return download_cart(user)
