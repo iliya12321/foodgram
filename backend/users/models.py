@@ -1,32 +1,40 @@
+from core.enums import Limits
 from django.contrib.auth.models import AbstractUser
-from django.db import models
+from django.db.models import (
+    CASCADE,
+    CharField,
+    EmailField,
+    ForeignKey,
+    Model,
+    UniqueConstraint,
+)
 
 from users.validators import validate_username
 
 
 class User(AbstractUser):
-    email = models.EmailField(
+    email = EmailField(
         'Адрес электронной почты',
-        max_length=254,
+        max_length=Limits.MAX_LEN_EMAIL_FIELD.value,
         unique=True,
     )
-    username = models.CharField(
+    username = CharField(
         'Уникальный юзернейм',
-        max_length=150,
+        max_length=Limits.MAX_LEN_USERS_CHARFIELD.value,
         unique=True,
         validators=[validate_username],
     )
-    first_name = models.CharField(
+    first_name = CharField(
         'Имя',
-        max_length=150,
+        max_length=Limits.MAX_LEN_USERS_CHARFIELD.value,
     )
-    last_name = models.CharField(
+    last_name = CharField(
         'Фамилия',
-        max_length=150,
+        max_length=Limits.MAX_LEN_USERS_CHARFIELD.value,
     )
-    password = models.CharField(
+    password = CharField(
         'Пароль',
-        max_length=150,
+        max_length=Limits.MAX_LEN_PASSWORD.value,
     )
 
     class Meta:
@@ -38,16 +46,16 @@ class User(AbstractUser):
         return self.username
 
 
-class Follow(models.Model):
-    user = models.ForeignKey(
+class Follow(Model):
+    user = ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=CASCADE,
         verbose_name='Подписчик',
         related_name='follower',
     )
-    author = models.ForeignKey(
+    author = ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=CASCADE,
         verbose_name='Автор',
         related_name='following',
     )
@@ -56,11 +64,11 @@ class Follow(models.Model):
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         constraints = [
-            models.UniqueConstraint(
+            UniqueConstraint(
                 fields=['user', 'author'],
-                name='unique_follow',
+                name='unique_follower',
             ),
         ]
 
     def __str__(self):
-        return '{} подписался на {}'.format(self.user, self.author)
+        return f'{self.user.username} подписан на {self.author.username}'

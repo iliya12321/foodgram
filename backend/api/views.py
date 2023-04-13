@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, SAFE_METHODS, IsAuthenticated
@@ -6,6 +7,7 @@ from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
 )
 
+from api.filters import IngredientSearchFilter, RecipeFilter
 from api.pagination import CustomPagination
 from api.permissions import IsAuthorAdminOrReadOnly
 from api.serializers import (
@@ -31,6 +33,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Tag.objects.all()
     serializer_class = TagsSerializer
+    pagination_class = None
     permission_classes = (AllowAny, )
 
 
@@ -41,7 +44,10 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    pagination_class = None
     permission_classes = (AllowAny, )
+    filter_backends = [IngredientSearchFilter]
+    search_fields = ('^name',)
 
 
 class PecipeViewSet(viewsets.ModelViewSet):
@@ -53,6 +59,8 @@ class PecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = (IsAuthorAdminOrReadOnly, )
     pagination_class = CustomPagination
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = RecipeFilter
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
