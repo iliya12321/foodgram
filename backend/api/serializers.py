@@ -6,7 +6,6 @@ from rest_framework.serializers import (
     ReadOnlyField,
     Serializer,
     SerializerMethodField,
-    ValidationError,
 )
 
 from core.validators import (
