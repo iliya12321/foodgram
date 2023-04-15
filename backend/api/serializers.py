@@ -6,6 +6,7 @@ from rest_framework.serializers import (
     ReadOnlyField,
     Serializer,
     SerializerMethodField,
+    ValidationError,
 )
 
 from core.validators import (
@@ -133,36 +134,35 @@ class RecipeChangeSerializer(ModelSerializer):
             ) for ingredient in ingredients_list
         ])
 
+    def validate(self, data):
+        validate_tags(self.initial_data.get('tags')),
+        validate_ingredients(
+            self.initial_data.get('ingredients')
+        )
+        validate_time(
+            self.initial_data.get('cooking_time')
+        )
+        return data
+ 
     def create_tags(self, data, recipe):
         """Отправка на валидацию и создание тэгов у рецепта."""
-        valid_tags = validate_tags(data.get('tags'))
-        tags = Tag.objects.filter(id__in=valid_tags)
-        recipe.tags.set(tags)
-
+        for tag in data: 
+            recipe.tags.add(tag) 
+ 
     def create(self, validated_data):
+        author = self.context.get('request').user
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
-        recipe = Recipe.objects.create(**validated_data)
+        recipe = Recipe.objects.create(author=author, **validated_data)
         self.create_tags(tags, recipe)
         self.add_ingredients(ingredients, recipe)
         return recipe
-
-    def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
-        return RecipeGetSerializer(instance, context=context).data
-
-    def validate(self, data):
-        return data.update({
-            'tags': validate_tags(self.initial_data.get('tags')),
-            'ingredients': validate_ingredients(
-                self.initial_data.get('ingredients')
-            ),
-            'cooking_time': validate_time(
-                self.initial_data.get('cooking_time')
-            ),
-        })
-
+ 
+    def to_representation(self, instance): 
+        request = self.context.get('request') 
+        context = {'request': request} 
+        return RecipeGetSerializer(instance, context=context).data 
+ 
     def update(self, instance, validated_data):
         instance.tags.clear()
         IngredientAmount.objects.filter(recipe=instance).delete()
