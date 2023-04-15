@@ -46,6 +46,7 @@ class CustomUserViewSet(UserViewSet):
         permission_classes=(IsAuthenticated, )
     )
     def subscribe(self, request, id):
+        """Создаёт или удаляет подписку на пользователя."""
         user = request.user
         author = get_object_or_404(User, id=id)
         if user == author:

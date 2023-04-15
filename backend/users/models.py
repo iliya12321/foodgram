@@ -1,5 +1,5 @@
-from core.enums import Limits
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 from django.db.models import (
     CASCADE,
     CharField,
@@ -9,10 +9,11 @@ from django.db.models import (
     UniqueConstraint,
 )
 
-from users.validators import validate_username
+from core.enums import Limits
 
 
 class User(AbstractUser):
+    """Модель пользователей."""
     email = EmailField(
         'Адрес электронной почты',
         max_length=Limits.MAX_LEN_EMAIL_FIELD.value,
@@ -22,7 +23,12 @@ class User(AbstractUser):
         'Уникальный юзернейм',
         max_length=Limits.MAX_LEN_USERS_CHARFIELD.value,
         unique=True,
-        validators=[validate_username],
+        validators=[
+            RegexValidator(
+                regex=r'^[\w.@+-]+$',
+                message='Недопустимые символы в никнейме'
+            ),
+        ],
     )
     first_name = CharField(
         'Имя',
@@ -47,6 +53,7 @@ class User(AbstractUser):
 
 
 class Follow(Model):
+    """Модель для подписок на автора рецепта."""
     user = ForeignKey(
         User,
         on_delete=CASCADE,

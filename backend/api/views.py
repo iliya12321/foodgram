@@ -40,7 +40,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Работает с ингридиентами.
-    Изменение и создание тэгов разрешено только админам.
+    Изменение и создание ингредиентов разрешено только админам.
     """
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
@@ -50,11 +50,12 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ('^name',)
 
 
-class PecipeViewSet(viewsets.ModelViewSet):
+class RecipeViewSet(viewsets.ModelViewSet):
     """
     Работает с рецептами.
     Для добавление рецепта необходимо быть авторизованным.
-    Удаление и редактирование рецепта разрешено только его автором или администратором.
+    Удаление и редактирование рецепта
+    разрешено только его автором или администратором.
     """
     queryset = Recipe.objects.all()
     permission_classes = (IsAuthorAdminOrReadOnly, )
@@ -73,6 +74,11 @@ class PecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated, ),
     )
     def favorite(self, request, pk):
+        """
+        Работает с избранными рецептами.
+        Удалять и добавлять в избранное
+        может только авторизованный пользователь.
+        """
         if self.request.method == 'POST':
             return post_method(Favorite, request.user, pk)
         return delete_method(Favorite, request.user, pk)
@@ -83,6 +89,11 @@ class PecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated, )
     )
     def shopping_cart(self, request, pk):
+        """
+        Работает со списком покупок.
+        Удалять и добавлять в список покупок
+        может только авторизованный пользователь.
+        """
         if request.method == 'POST':
             return post_method(ShoppingCart, request.user, pk)
         return delete_method(ShoppingCart, request.user, pk)
@@ -93,6 +104,10 @@ class PecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated, )
     )
     def download_shopping_cart(self, request):
+        """
+        Позволяет скачать файл списка покупок.
+        Доступно только авторизованным пользователям.
+        """
         user = request.user
         if not user.carts.exists():
             return Response(status=HTTP_400_BAD_REQUEST)

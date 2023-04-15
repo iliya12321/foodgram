@@ -12,12 +12,14 @@ from django.db.models import (
     TextField,
     UniqueConstraint,
 )
+
 from core.enums import Limits
+from recipes.validators import hex_color_validator
 from users.models import User
 
 
 class Tag(Model):
-    """Тег"""
+    """Тег."""
     name = CharField(
         verbose_name='Название тега',
         max_length=Limits.MAX_LEN_RECIPES_CHARFIELD.value,
@@ -27,6 +29,7 @@ class Tag(Model):
         verbose_name='Цвет тега',
         max_length=Limits.MAX_LEN_COLOR.value,
         unique=True,
+        validators=[hex_color_validator],
     )
     slug = SlugField(
         max_length=Limits.MAX_LEN_RECIPES_CHARFIELD.value,
@@ -43,7 +46,7 @@ class Tag(Model):
 
 
 class Ingredient(Model):
-    """Ингиридиент"""
+    """Ингиридиент."""
     name = CharField(
         verbose_name='Название ингридиента',
         max_length=Limits.MAX_LEN_RECIPES_CHARFIELD.value,
@@ -69,7 +72,7 @@ class Ingredient(Model):
 
 
 class Recipe(Model):
-    """Рецепт блюда"""
+    """Рецепт блюда."""
     author = ForeignKey(
         User,
         related_name='recipes',
@@ -104,7 +107,10 @@ class Recipe(Model):
         validators=[
             MinValueValidator(
                 Limits.MIN_COOKING_TIME_AND_AMOUNT.value,
-                message='Убедитесь, что введенное число больше или равно 1',
+                message=(
+                    f"""Убедитесь, что введенное число больше или равно
+                    {Limits.MIN_COOKING_TIME_AND_AMOUNT.value}"""
+                ),
             ),
         ],
     )
@@ -124,7 +130,7 @@ class Recipe(Model):
 
 
 class IngredientAmount(Model):
-    """Количество ингридиентов в рецепте"""
+    """Количество ингридиентов в рецепте."""
     recipe = ForeignKey(
         Recipe,
         related_name='ingredient',
@@ -142,7 +148,10 @@ class IngredientAmount(Model):
         validators=[
             MinValueValidator(
                 Limits.MIN_COOKING_TIME_AND_AMOUNT.value,
-                message='Убедитесь, что введенное число больше или равно 1',
+                message=(
+                    f"""Убедитесь, что введенное число больше или равно
+                    {Limits.MIN_COOKING_TIME_AND_AMOUNT.value}"""
+                ),
             ),
         ],
     )
@@ -162,7 +171,7 @@ class IngredientAmount(Model):
 
     
 class Favorite(Model):
-    """Избранные рецепты"""
+    """Избранные рецепты."""
     recipe = ForeignKey(
         Recipe,
         related_name='in_favorites',
@@ -187,11 +196,11 @@ class Favorite(Model):
         ]
 
     def __str__(self):
-        return 'Рецепт {} в избранном у {}'.format(self.recipe, self.user)
+        return f'Рецепт: {self.recipe} в избранном у {self.user.username}'
 
 
 class ShoppingCart(Model):
-    """Список покупок"""
+    """Список покупок."""
     recipe = ForeignKey(
         Recipe,
         related_name='in_carts',
@@ -216,4 +225,4 @@ class ShoppingCart(Model):
         ]
 
     def __str__(self):
-        return 'Рецепт {} в списке покупок у {}'.format(self.recipe, self.user)
+        return f'Рецепт {self.recipe} в списке покупок у {self.user.username}'

@@ -5,20 +5,22 @@ from recipes.models import Recipe
 from users.models import User, Follow
 
 
+FIELDS_USER = (
+    'id',
+    'email',
+    'username',
+    'first_name',
+    'last_name',
+)
+
+
 class CustomUserCreateSerializer(UserCreateSerializer):
     """
     Сериализатор для регистрации пользователя.
     """
     class Meta:
         model = User
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'password'
-        )
+        fields = FIELDS_USER + ('password', )
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -34,28 +36,20 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 
 class CustomUserSerializer(UserSerializer):
-    """
-    Сериализатор для пользователя.
-    get_is_subscribed показывает,
-    подписан ли текущий пользователь на просматриваемого.
-    """
+    """Сериализатор для пользователя."""
     is_subscribed = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed',
-        )
+        fields = FIELDS_USER + ('is_subscribed', )
 
     def get_is_subscribed(self, obj):
+        """Подписан ли текущий пользователь на просматриваемого."""
         user_id = self.context.get('request').user.id
         return Follow.objects.filter(
-            author=obj.id, user=user_id).exists()
+            author=obj.id,
+            user=user_id
+        ).exists()
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
@@ -82,21 +76,18 @@ class FollowSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
+        fields = FIELDS_USER + (
             'is_subscribed',
             'recipes',
             'recipes_count',
         )
 
     def get_recipes_count(self, obj):
+        """Высчитывает количество рецептов."""
         return obj.author.recipes.count()
 
     def get_is_subscribed(self, obj):
+        """Подписан ли текущий пользователь на просматриваемого."""
         request = self.context.get('request')
         return (
             request and request.user.is_authenticated
@@ -104,6 +95,7 @@ class FollowSerializer(serializers.ModelSerializer):
         )
 
     def get_recipes(self, obj):
+        """Показывает рецепты пользователя."""
         request = self.context.get('request')
         recipes = obj.author.recipes.all()
         recipes_limit = request.query_params.get('recipes_limit')

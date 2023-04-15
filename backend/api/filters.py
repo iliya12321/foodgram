@@ -6,10 +6,14 @@ from users.models import User
 
 
 class IngredientSearchFilter(SearchFilter):
+    """Поиск ингредиента по имени."""
     search_param = 'name'
 
 
 class RecipeFilter(FilterSet):
+    """
+    Доступна фильтрация по избранному, автору, списку покупок и тегам.
+    """
     tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
     author = filters.ModelChoiceFilter(queryset=User.objects.all())
     is_favorited = filters.BooleanFilter(method='filter_favorited')

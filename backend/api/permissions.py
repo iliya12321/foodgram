@@ -2,6 +2,10 @@ from rest_framework import permissions
 
 
 class IsAuthorAdminOrReadOnly(permissions.BasePermission):
+    """
+    Дает доступ к безопасным методам для неавторизованных пользователей,
+    и полный доступ для авторизованных и админов
+    """
     def has_permission(self, request, view):
         return (
             request.method in permissions.SAFE_METHODS
@@ -9,10 +13,9 @@ class IsAuthorAdminOrReadOnly(permissions.BasePermission):
         )
 
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
         return (
-            request.user.is_authenticated
+            request.method in permissions.SAFE_METHODS
+            or request.user.is_authenticated
             and (
                 request.user == obj.author
                 or request.user.is_superuser
