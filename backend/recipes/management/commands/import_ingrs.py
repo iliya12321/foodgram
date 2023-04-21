@@ -31,4 +31,6 @@ class Command(BaseCommand):
                         measurement_unit=measurement_unit
                     )
         except FileNotFoundError:
-            raise CommandError('Добавьте файл ingredients.csv в директорию backend/data ')
+            raise CommandError(
+                'Добавьте файл ingredients.csv в директорию backend/data'
+            )

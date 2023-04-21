@@ -63,7 +63,7 @@ class Ingredient(Model):
         constraints = [
             UniqueConstraint(
                 fields=['name', 'measurement_unit'],
-                name = 'unique_ingredient',
+                name='unique_ingredient',
             ),
         ]
 
@@ -169,7 +169,7 @@ class IngredientAmount(Model):
     def __str__(self):
         return f'{self.amount} {self.ingredient}'
 
-    
+
 class Favorite(Model):
     """Избранные рецепты."""
     recipe = ForeignKey(
@@ -191,7 +191,7 @@ class Favorite(Model):
         constraints = [
             UniqueConstraint(
                 fields=['user', 'recipe'],
-                name = 'unique_favourite_recipe',
+                name='unique_favourite_recipe',
             ),
         ]
 
@@ -220,7 +220,7 @@ class ShoppingCart(Model):
         constraints = [
             UniqueConstraint(
                 fields=['user', 'recipe'],
-                name = 'unique_recipe_in_shopping_cart',
+                name='unique_recipe_in_shopping_cart',
             ),
         ]
 

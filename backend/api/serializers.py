@@ -142,12 +142,12 @@ class RecipeChangeSerializer(ModelSerializer):
             self.initial_data.get('cooking_time')
         )
         return data
- 
+
     def create_tags(self, data, recipe):
         """Отправка на валидацию и создание тэгов у рецепта."""
-        for tag in data: 
-            recipe.tags.add(tag) 
- 
+        for tag in data:
+            recipe.tags.add(tag)
+
     def create(self, validated_data):
         author = self.context.get('request').user
         tags = validated_data.pop('tags')
@@ -156,12 +156,12 @@ class RecipeChangeSerializer(ModelSerializer):
         self.create_tags(tags, recipe)
         self.add_ingredients(ingredients, recipe)
         return recipe
- 
-    def to_representation(self, instance): 
-        request = self.context.get('request') 
-        context = {'request': request} 
-        return RecipeGetSerializer(instance, context=context).data 
- 
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        context = {'request': request}
+        return RecipeGetSerializer(instance, context=context).data
+
     def update(self, instance, validated_data):
         instance.tags.clear()
         IngredientAmount.objects.filter(recipe=instance).delete()

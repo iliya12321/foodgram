@@ -38,13 +38,13 @@ def validate_tags(tags):
     if not tags:
         raise ValidationError('Хотя бы один тэг должен быть указан.')
 
-    tags_list = [] 
+    tags_list = []
     for tag in tags:
         if not Tag.objects.filter(id=tag).exists():
             raise ValidationError('Тэг отсутствует в БД.')
-        if tag in tags_list: 
+        if tag in tags_list:
             raise ValidationError(
-                'Тэги должны быть уникальными!' 
+                'Тэги должны быть уникальными!'
             )
         tags_list.append(tag)
     return tags

@@ -45,7 +45,9 @@ class RecipeAdmin(ModelAdmin):
 
     def get_image(self, obj):
         if obj.image:
-            return mark_safe(f'<img src={obj.image.url} width="80" hieght="30"')
+            return mark_safe(
+                f'<img src={obj.image.url} width="80" hieght="30"'
+            )
 
     get_image.short_description = 'Изображение'
 
