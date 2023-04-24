@@ -41,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v2 
         with:
           context: backend
-          file: ./api_yamdb/Dockerfile
+          file: backend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/backend:v1.0.0
 
