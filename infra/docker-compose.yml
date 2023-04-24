@@ -16,7 +16,7 @@ services:
       - .env
 
   backend:
-    build: ../backend
+    image: iliya1234/backend:v1.0.0
     restart: always
     volumes:
       - static_value:/app/static/
@@ -27,7 +27,7 @@ services:
       - .env
  
   frontend:
-    build: ../frontend
+    image: iliya1234/frontend:v1.0.0
     volumes:
       - ./frontend/:/app/result_build/
     depends_on:
