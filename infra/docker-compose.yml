@@ -13,21 +13,14 @@ services:
 
   frontend:
     container_name: front
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: iliya1234/frontend:v1.0.0
     volumes:
       - ../frontend/:/app/result_build/
 
   backend:
     container_name: app
-    # image: xewus/foodgram_back:latest
-    build: ../backend
+    image: iliya1234/backend:v1.0.0
     restart: always
-    command: >
-      bash -c "python manage.py migrate &&
-      python manage.py collectstatic --noinput &&
-      gunicorn --bind 0:8000 backend.wsgi"
     volumes:
       - static_value:/app/static/
       - media_value:/app/media/

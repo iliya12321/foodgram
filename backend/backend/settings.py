@@ -4,11 +4,11 @@ DATE_TIME_FORMAT = '%d/%m/%Y %H:%M'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = '%2aa%ik7)#_fjugopg$#%^+)_%3$cq&cgw6_8iv_du(n0bh*e='
+SECRET_KEY = os.getenv('SECRET_KEY', 'secret_key')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [os.getenv('HOST', 'allowed_hosts')]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
