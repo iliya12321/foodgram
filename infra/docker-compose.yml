@@ -15,7 +15,7 @@ services:
       - .env
 
   backend:
-    image: infra_backend:latest
+    image: iliya1234/backend:v1.0.0
     restart: always
     volumes:
       - static_value:/app/static/
@@ -24,7 +24,7 @@ services:
       - db
     env_file:
       - .env
- 
+
   frontend:
     image: infra_frontend:latest
     volumes:
