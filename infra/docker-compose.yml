@@ -25,7 +25,7 @@ services:
       - db
     env_file:
       - .env
-
+ 
   frontend:
     image: iliya1234/frontend:v1.0.0
     volumes:
