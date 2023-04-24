@@ -8,7 +8,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'secret_key')
 
 DEBUG = True
 
-ALLOWED_HOSTS = [os.getenv('HOST', 'allowed_hosts')]
+# ALLOWED_HOSTS = [os.getenv('HOST', 'allowed_hosts')]
+ALLOWED_HOSTS = ['backend', '158.160.33.43',]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
