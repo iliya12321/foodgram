@@ -3,7 +3,6 @@ version: '3.3'
 services:
 
   db:
-    container_name: db
     image: postgres:13.0-alpine
     restart: always
     volumes:
@@ -12,13 +11,11 @@ services:
       - .env
 
   frontend:
-    container_name: front
     image: iliya1234/frontend:v1.0.0
     volumes:
       - ../frontend/:/app/result_build/
 
   backend:
-    container_name: app
     image: iliya1234/backend:v1.0.0
     restart: always
     volumes:
@@ -28,9 +25,8 @@ services:
       - db
     env_file:
       - .env
-
+ 
   nginx:
-    container_name: proxy
     image: nginx:1.19.3
     restart: always
     ports:
