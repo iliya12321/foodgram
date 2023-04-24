@@ -14,7 +14,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - .env
- 
+
   backend:
     image: iliya1234/backend:v1.0.0
     restart: always
