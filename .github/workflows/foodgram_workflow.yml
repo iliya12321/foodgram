@@ -45,7 +45,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/backend:v1.0.0
 
-  deploy:
+  deploy: 
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
     if: success() && github.ref == 'refs/heads/master'
