@@ -15,7 +15,7 @@ CORS_URLS_REGEX = r'^/api/.*$'
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://158.160.33.43/']
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', default='127.0.0.1')]
 
