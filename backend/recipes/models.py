@@ -91,7 +91,7 @@ class Recipe(Model):
         verbose_name='Список id тегов',
     )
     image = ImageField(
-        verbose_name='Картинка, закодированная в Base64',
+        verbose_name='Картинка блюда',
         upload_to='recipe_images/',
     )
     name = CharField(
