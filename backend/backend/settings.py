@@ -13,8 +13,6 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'secret_key')
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://158.160.33.43/']
-
 DEBUG = True
 
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', default='127.0.0.1')]
