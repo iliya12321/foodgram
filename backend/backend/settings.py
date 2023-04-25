@@ -10,9 +10,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'secret_key')
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_URLS_REGEX = r'^/api/.*$'
-
 DEBUG = True
 
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', default='127.0.0.1')]
