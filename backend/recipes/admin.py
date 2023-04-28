@@ -50,7 +50,6 @@ class RecipeAdmin(ModelAdmin):
 @register(Ingredient)
 class IngredientAdmin(ModelAdmin):
     list_display = ('id', 'name', 'measurement_unit')
-    list_filter = ('name',)
     search_fields = ('name',)
     empty_value_display = EMPTY_VALUE_DISPLAY
 
@@ -58,15 +57,12 @@ class IngredientAdmin(ModelAdmin):
 @register(IngredientAmount)
 class IngredientAmountAdmin(ModelAdmin):
     list_display = ('id', 'recipe', 'ingredient', 'amount')
-    list_filter = ('recipe', 'ingredient')
-    search_fields = ('recipe__name', 'ingredient__name')
     empty_value_display = EMPTY_VALUE_DISPLAY
 
 
 @register(Favorite)
 class FavoutriteAdmin(ModelAdmin):
     list_display = ('id', 'user', 'recipe')
-    list_filter = ('user', 'recipe')
     search_fields = ('user__username', 'recipe__name')
     empty_value_display = EMPTY_VALUE_DISPLAY
 
@@ -74,7 +70,6 @@ class FavoutriteAdmin(ModelAdmin):
 @register(Tag)
 class TagAdmin(ModelAdmin):
     list_display = ('id', 'name', 'color', 'slug')
-    list_filter = ('name',)
     search_fields = ('name',)
     empty_value_display = EMPTY_VALUE_DISPLAY
 
