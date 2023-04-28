@@ -73,7 +73,7 @@ class FavoutriteAdmin(ModelAdmin):
 
 @register(Tag)
 class TagAdmin(ModelAdmin):
-    list_display = ('id', 'name','color', 'slug')
+    list_display = ('id', 'name', 'color', 'slug')
     list_filter = ('name',)
     search_fields = ('name',)
     empty_value_display = EMPTY_VALUE_DISPLAY
